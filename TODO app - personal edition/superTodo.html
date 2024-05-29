@@ -1,0 +1,1236 @@
+<!--Matthew Ogurkis-->
+<!--Date started: 5/7/2024-->
+<!--Date finished: 1.0 - 5/29/2024-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Super Todo!</title>
+        <!-- Bootstrap link here -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <!--Bootstrap Datepicker CSS (brings up that little calender)-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+        <!--implementing bootstrap theme here!-->
+        <link id="defaultBootstrapTheme" href="C:\Users\Matthew\Desktop\TODO app - personal edition\bootstrap themes/bootstrap.css" rel="stylesheet">
+        <!--implementing css for calander and list-->     
+        <style>
+            #calendar {
+                width: 100%; 
+                height: 595px; 
+                margin: 0; 
+                margin-top: 20px;
+            }
+            #upcomingTasksCard {
+                height: 600px;
+                overflow-y: auto;
+                margin-top: 20px; /* Adjust this value as needed to lower the card */
+            }
+            .no-gutters {
+                margin-right: 0;
+                margin-left: 0;
+            }
+            .col-md-5 {
+                margin-left: -15px; /* Adjust this value as needed */
+            }
+        </style>
+    </head>
+    <body class="d-flex flex-column">
+        <!--Navbar part-->
+        <div id="divDashboardNavbar" class="d-none">        
+            <nav class="navbar navbar-expand-lg top-0" data-bs-theme="dark">
+                <div class="container-fluid">
+                    <!-- Navbar brand -->
+                    <a class="navbar-brand" href="#">Super Todo!</a>
+                    <!-- Navbar toggler button for mobile -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Navbar links and search form -->
+                    <div class="collapse navbar-collapse" id="navbarColor02">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <button id="btnAddTask" class="nav-link btn btn-link" type="button">Add Task</button>
+                            </li>
+                            <li class="nav-item">
+                                <button id="btnDeleteTask" class="nav-link btn btn-link" type="button">Remove Task</button>
+                            </li>
+                            <li class="nav-item">
+                                <button id="btnEditTask" class="nav-link btn btn-link" type="button">Edit task</button>
+                            </li>
+                            <li class="nav-item">
+                                <button id="btnLogout" class="nav-link btn btn-link" type="button">Logout</button>
+                            </li>
+                            <li class="nav-item">
+                                <button id="btnSettings" class="nav-link btn btn-link" type="button">Settings</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!--seperation-->
+        <!--dashboard part(calender stuff) here-->
+        <div id="divDashboard" class="d-none container-fluid">
+            <div class="row">
+                <div class="col-md-7">
+                    <div id="calendar"></div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card" id="upcomingTasksCard">
+                        <div class="card-header">
+                            <h3>Your Upcoming Tasks</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul id="upcomingTasksList" class="list-group">
+                                <!-- Upcoming tasks will be dynamically populated here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!---->
+        <div class="d-flex col-12 justify-content-center align-items-center vh-100">    
+            <!--Login part here--> 
+            <div class="card col-12 col-md-5 col-lg-4" id="divLogin">
+                <div class="card-header">
+                    <h3>Super Todo App Login</h3>
+                </div>
+                <div class="card-body">
+                    <form>
+                    <div class="form-group mt-4">
+                        <label for="txtLoginUsername" class="form-label">Username</label>
+                        <input id="txtLoginUsername" placeholder="Username" aria-label="Username" class="form-control" >
+                    </div>
+                    <div class="form-group">
+                        <label for="txtLoginPassword" class="form-label">Password</label>
+                        <input id="txtLoginPassword" placeholder="Password" aria-label="Password" class="form-control" type="password">
+                    </div>
+                    <button class="col-12 btn btn-success mt-4" id="btnLogin" type="button">Login</button>
+                    <div class="col-12 d-flex justify-content-center">
+                        <a class="col-12 text-center btnToggle" data-card="Login">Need an Account?  Click Here</a>
+                    </div>                
+                </form>
+            </div>
+        </div>
+    <!--Registration part starts here--> 
+    <div class="card col-12 col-md-5 col-lg-4" id="divRegister" style="display:none;">
+        <div class="card-header">
+            <h3>Registration Page</h3>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="form-group mt-4">
+                    <label for="txtUsername" class="form-label">Username</label>
+                    <input id="txtUsername" placeholder="Username" aria-label="Username" class="form-control"> 
+                </div>
+                <div class="form-group mt-4">
+                    <label for="txtEmail" class="form-label">Email</label>
+                    <input id="txtEmail" placeholder="YourEmail@example.com" aria-label="Email" class="form-control" type="email"> 
+                </div>
+                <div class="form-group">
+                    <label for="txtPassword" class="form-label">Password</label>
+                    <input id="txtPassword" placeholder="Password" aria-label="Password" class="form-control" type="password">
+                </div>
+                <!--register button-->
+                <button class="col-12 btn btn-success mt-4" id="btnRegister" type="button">Register</button>
+                <div class="col-12 d-flex justify-content-center">
+                    <a class="col-12 text-center btnToggle" data-card="Register">Return To Login</a>
+                </div> 
+            </form>
+        </div>
+    </div>
+
+
+    <!--Adding a addtask modal here-->
+    <div class="modal fade" id="divAddTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTaskModalLabel">Add Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!--Add task form -->
+                    <form id="addTaskForm">
+                        <div class="form-group mt-4">
+                            <label for="txtTaskName" class="form-label">Task Name</label>
+                            <input id="txtTaskName" placeholder="Task Name" aria-label="Task Name" class="form-control" required> 
+                        </div>
+                        <div class="form-group mt-4">
+                            <label for="txtTaskInstruction" class="form-label">Instruction</label>
+                            <textarea id="txtTaskInstruction" placeholder="Instruction" aria-label="Instruction" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtTaskLocation" class="form-label">Location</label>
+                            <input id="txtTaskLocation" placeholder="Location" aria-label="Location" class="form-control"> 
+                        </div>
+                        <div class="form-group">
+                            <label for="txtTaskStatus" class="form-label">Status</label>
+                            <!--adding options for the user's task status for adding it should only be pending because they're adding a task-->
+                            <select id="txtTaskStatus" class="form-select">
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtTaskDueDate" class="form-label">Due Date</label>
+                            <input id="txtTaskDueDate" placeholder="Due Date" aria-label="Due Date" class="form-control datepicker">
+                        </div>
+                        <!--Add other input fields as needed -->
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-primary" id="btnAddTaskModalED">Add Task</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--adding a modal to edit a task here-->
+    <div class="modal fade" id="divEditTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTaskModalLabel">Edit Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Edit task form -->
+                    <form id="editTaskForm">
+                        <div class="form-group mt-4">
+                            <label for="editTaskName" class="form-label">Task Name</label>
+                            <input id="editTaskName" placeholder="Task Name" aria-label="Task Name" class="form-control" required>
+                        </div>
+                        <div class="form-group mt-4">
+                            <label for="editTaskInstruction" class="form-label">Instruction</label>
+                            <textarea id="editTaskInstruction" placeholder="Instruction" aria-label="Instruction" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTaskLocation" class="form-label">Location</label>
+                            <input id="editTaskLocation" placeholder="Location" aria-label="Location" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTaskStatus" class="form-label">Status</label>
+                            <select id="editTaskStatus" class="form-select">
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Overdue">Overdue</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTaskDueDate" class="form-label">Due Date</label>
+                            <input id="editTaskDueDate" placeholder="Due Date" aria-label="Due Date" class="form-control datepicker">
+                        </div>
+                        <!-- Add other input fields as needed -->
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-primary" id="btnUpdateTaskModalED">Update Task</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--adding a modal to DELETE a task-->
+    <div class="modal fade" id="divDeleteTaskModal" tabindex="-1" aria-labelledby="deleteTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteTaskModalLabel">Delete Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <!-- Delete task confirmation message -->
+                    <p>Are you sure you want to delete this task?</p>
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-danger" id="btnConfirmDeleteTask">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!--adding the modal to list all the tasks-->
+    <div class="modal fade" id="divListTasksModal" tabindex="-1" aria-labelledby="listTasksModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="listTasksModalLabel">Your Tasks</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Task list -->
+                    <ul id="taskList" class="list-group">
+                        <!-- List items will be populated here dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Settings modal here -->
+<div class="modal fade" id="divSettingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="settingsForm">
+                    <div class="mb-3">
+                        <label for="txtFontSize" class="form-label">Font Size</label>
+                        <input type="number" id="txtFontSize" class="form-control" min="12" max="24" value="16">
+                    </div>
+                    <div class="mb-3">
+                        <label for="txtFontType" class="form-label">Font Type</label>
+                        <select id="txtFontType" class="form-select">
+                            <option value="Arial">Arial</option>
+                            <option value="Helvetica">Helvetica</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Comic Sans">Comic Sans</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="txtBootstrapTheme" class="form-label">Bootstrap Theme</label>
+                        <select id="txtBootstrapTheme" class="form-select">
+                            <option value="bootstrap.css">Default</option>
+                            <option value="Dark.css">Theme 1 - Dark</option>
+                            <option value="Quartz.css">Theme 2 - Quartz</option>
+                            <option value="Vapor.css">Theme 3 - Vapor</option>
+                            <option value="Morph.css">Theme 4 - Slate</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="btnApplySettings">Apply Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+ <!-- Adding references to scripts here the order is jQuery, Bootstrap, SweetAlert -->
+ <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> 
+ <!-- Add jquery and sweet alert from the local directory -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>  
+ <!-- sweet alert-->
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <!--Bootstrap Datepicker JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<!--FullCalender referance here-->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.12/index.global.min.js"></script>
+ <!--Javascript starts here!-->
+ <script>
+    //declaring a global variable to store selected task ID
+    let selectedTaskId;
+    
+    //toggle stuff here
+    $('.btnToggle').on('click', function(){
+        $('#divLogin').slideToggle();
+        $('#divRegister').slideToggle();
+    });
+
+    //function for my login button should check the database to make sure the email exsists and the password exsists
+    $('#btnLogin').on('click', function(){
+        //input variables here
+        let strUsername = $('#txtLoginUsername').val();
+        let strPassword = $('#txtLoginPassword').val(); 
+
+        
+            //its a username, validate it
+            if(!isValidUsername(strUsername)){
+                //Show error message for invalid username
+                Swal.fire({
+                    title: "Invalid Username",
+                    text: "Please enter a valid username.",
+                    icon: "error"
+                });
+                return;
+            }
+        
+
+        //ajax request to my backend to authenticate the user
+        $.ajax({
+            url: 'http://localhost:8000/login',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                username: strUsername,
+                password: strPassword
+            }),
+            success: function(response){
+                //login was successful!
+                console.log(response.message);
+                //put the username in storage.
+                localStorage.setItem('loggedInUsername', strUsername);
+                //sweetalert
+                Swal.fire({
+                    title: "Successfully logged in! Enjoy!!!",
+                    text: response.message,
+                    icon: "success"
+                }).then((result) => {
+                    //Sliding to app dashboard
+                    $('#divDashboard').slideToggle();
+                    $('#divLogin').slideToggle(); 
+                    //Clearing the input fields
+                    $('#txtLoginUsername').val('');
+                    $('#txtLoginPassword').val('');
+
+                    //showing the dashboard
+                    $('#divDashboard').removeClass('d-none');
+                    showDashboardNavbar();
+
+                    //refreshing calander
+                    refreshCalendarFromOutside();
+
+                    //load user's settings
+                    loadUserSettings(localStorage.getItem('loggedInUsername'));
+                })
+            },
+            error: function(xhr, status, error){
+                //login failed!
+                console.error('Login error', error);
+
+                //Display error for the user
+                Swal.fire({
+                    title: "Error!",
+                    text: "Login failed. Please try again later.",
+                    icon: "error"
+                });
+            }
+
+        })
+
+    });
+
+    //function for my register button
+    $('#btnRegister').on('click', function(){
+        //variables here
+        let blnError = false;
+        let strError = '';
+
+        //grabbing the data from the user from html form above
+        let strUsername = $('#txtUsername').val();
+        let strEmail = $('#txtEmail').val();
+        let strPassword = $('#txtPassword').val(); 
+
+        //making an array of reserved usernames
+        const reservedUsernames = ['admin', 'root', 'superuser', 'moderator'];
+
+        //form validation starts here
+        //email validation here(must be len 7 or higher, must have an @ and must have a .)
+        if(strEmail.length < 7){
+            blnError = true;
+            strError += '<p>Email must be valid.</p>'
+        }
+        else if (!strEmail.includes('@')){
+            blnError = true;
+            strError += '<p>Email must include "@".</p>'
+        } 
+        else if(!strEmail.includes('.')){
+            blnError = true;
+            strError += '<p>Email must include ".".</p>'
+        }
+        else{
+            //splitting the email address into local and domain parts.
+            const[localPart, domainPart] = strEmail.split('@');
+
+            //validating domain
+            if(domainPart.length < 1){
+                blnError = true;
+                strError += '<p>Email must have a valid domain part.</p>';
+            }
+            else if (!/\.[a-zA-Z]+$/.test(domainPart)) {
+                blnError = true;
+                strError += '<p>Email must have a valid top-level domain (TLD).</p>';
+            }
+        }
+        //validating username (must be length 6 or higher, must have a number, cannot have spaces)
+        if(strUsername.length < 1){
+            blnError = true;
+            strError += '<p>Username cannot be blank!</p>'
+        }
+        else if(strUsername.length < 6){
+            blnError = true;
+            strError += '<p>Username length cannot be less than 6!</p>'
+        }
+        else if (!/\d/.test(strUsername)) {
+            blnError = true;
+            strError += '<p>Username must include at least one number!</p>';
+        }
+        else if (/\s/.test(strUsername)) {
+            blnError = true;
+            strError += '<p>Username cannot contain spaces!</p>';
+        }
+        else if (/[^a-zA-Z0-9]/.test(strUsername)) {
+            blnError = true;
+            strError += '<p>Username cannot contain special characters!</p>';
+        }
+        else if (reservedUsernames.includes(strUsername.toLowerCase())) {
+            blnError = true;
+            strError += '<p>Username is reserved. Please choose a different username!</p>';
+        }
+        //password validation(must be length 6 or higher, must have a number, cannot have spaces)
+        if(strPassword.length < 1){
+            blnError = true;
+            strError += '<p>Password cannot be blank!</p>'
+        }
+        else if(strPassword.length < 6){
+            blnError = true;
+            strError += '<p>Password length cannot be less than 6!</p>'
+        }
+        else if (!/\d/.test(strPassword)) {
+            blnError = true;
+            strError += '<p>Password must include at least one number!</p>';
+        }
+        else if (/\s/.test(strPassword)) {
+            blnError = true;
+            strError += '<p>Password cannot contain spaces!</p>';
+        }
+        else if (/[^a-zA-Z0-9]/.test(strPassword)) {
+            blnError = true;
+            strError += '<p>Password cannot contain special characters!</p>';
+        }
+        //if there is an error: show it
+        if(blnError == true)
+        {
+            Swal.fire({
+                title: "Oops!",
+                html: strError,
+                icon: "error"
+            })
+        }
+        else{
+            //sneding the post request to the register endpoint here
+            $.ajax({
+                url: 'http://localhost:8000/register', //Update with your backend server URL
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: strUsername,
+                    passwordHash: strPassword,
+                    email: strEmail
+                }),
+                success: function(response) {
+                    //Registration successful
+                    console.log(response.message);
+
+                    //letting the user know their registration was successful and sending them to login once OK is clicked
+                    Swal.fire({
+                        title: "Successfully registered!",
+                        text: response.message,
+                        icon: "success"
+                    }).then((result) => {
+                        //Sliding back to login
+                        $('#divLogin').slideToggle();
+                        $('#divRegister').slideToggle();
+                        //Clearing the input fields
+                        $('#txtUsername').val('');
+                        $('#txtEmail').val('');
+                        $('#txtPassword').val('');
+                    })
+                    
+                },
+                error: function(xhr, status, error) {
+                    //Registration failed
+                    console.error('Registration error:', error);
+                    //Display error for the user
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Registration failed. Please try again later.",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+    });
+
+    //logout button click event
+    $('#btnLogout').on('click', function(){
+        hideDashboardNavbar();
+        $('#divDashboard').slideToggle(function(){
+                $('#divLogin').slideToggle() 
+        });
+    })
+
+    //add task model button click event to add a task to the database
+    $('#btnAddTaskModalED').on('click', function(){
+        //grabbing the data entered above to be validated
+        let blnError = false;
+        let strError = '';
+
+        let strTaskName = $('#txtTaskName').val();
+        let strTaskInstruction = $('#txtTaskInstruction').val();
+        let strTaskLocation = $('#txtTaskLocation').val();
+        let strTaskStatus = $('#txtTaskStatus').val();
+        let strTaskDueDate = $('#txtTaskDueDate').val();
+        let strUsername = localStorage.getItem('loggedInUsername');
+
+        //converting the string date into a date object and getting the current date
+        let taskDueDate = new Date(strTaskDueDate);
+        let currentDate = new Date();
+
+        // Set time components to 00:00:00 for accurate date comparison
+        taskDueDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+
+        //adding 1 to the task due date so it actually matches up
+        taskDueDate.setDate(taskDueDate.getDate() + 1);
+
+        if(strTaskName.length < 1){
+            blnError = true;
+            strError += '<p>Task name cannot be blank!</p>';
+        }
+        if(strTaskInstruction.length < 1){
+            blnError = true;
+            strError += '<p>Task instruction cannot be blank!</p>';
+        }
+        if(strTaskLocation.length < 1){
+            blnError = true;
+            strError += '<p>Task location cannot be blank!</p>';
+        }
+        if(!strTaskStatus){ // Assuming strTaskStatus should not be empty
+            blnError = true;
+            strError += '<p>Task status option must be chosen!</p>';
+        }
+        if(taskDueDate == currentDate)
+        {
+            blnError = false;
+        }
+        else if(taskDueDate < currentDate){
+            blnError = true;
+            strError += '<p>Please enter a valid date!</p>';
+        }
+        if(blnError){
+            Swal.fire({
+                title: "Oops!",
+                html: strError,
+                icon: "error"
+            });
+        }
+        else{
+            //sending the post request to my addTask endpoint to add a task to my db
+            $.ajax({
+                url: 'http://localhost:8000/addTask',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: strUsername,
+                    taskName: strTaskName,
+                    instruction: strTaskInstruction,
+                    location: strTaskLocation,
+                    status: strTaskStatus,
+                    dueDate: strTaskDueDate
+                }),
+                success: function(response){
+                    //the task was added successfully
+                    console.log(response.message);
+
+                    //sweetalert to show that it went through for the user
+                    Swal.fire({
+                        title: "Success!",
+                        text: response.message,
+                        icon: "success"
+                    });
+
+                    //Clearing the input fields
+                    $('#txtTaskName').val('');
+                    $('#txtTaskInstruction').val('');
+                    $('#txtTaskLocation').val('');
+                    $('#txtTaskDueDate').val('');
+
+                    //close modal
+                    $('#divAddTaskModal').modal('hide');
+
+                    //refresh calander
+                    refreshCalendarFromOutside();
+                },
+                error: function(xhr, status, error){
+                    //handle the errors here
+                    let errorMessage = "Failed to add task.";
+                    if (xhr.responseJSON && xhr.responseJSON.error){
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    Swal.fire({
+                        title: "Oops!",
+                        text: errorMessage,
+                        icon: "error"
+                    });
+                }
+            })
+        }
+    });
+
+    //update task click event
+    $('#btnUpdateTaskModalED').on('click',function(){
+        //error tracking variables here
+        let blnError = false;
+        let strError = '';
+
+        //console.log(selectedTaskId);
+
+        let strTaskName = $('#editTaskName').val();
+        let strTaskInstruction = $('#editTaskInstruction').val();
+        let strTaskLocation = $('#editTaskLocation').val();
+        let strTaskStatus = $('#editTaskStatus').val();
+        let strTaskDueDate = $('#editTaskDueDate').val();
+
+        //date stuff 
+        let taskDueDate = new Date(strTaskDueDate);
+        let currentDate = new Date();
+        
+        taskDueDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+
+        //form validation (pretty much same stuff as above)
+        if (strTaskName.length < 1) {
+            blnError = true;
+            strError += '<p>Task name cannot be blank!</p>';
+        }
+        if (strTaskInstruction.length < 1) {
+            blnError = true;
+            strError += '<p>Task instruction cannot be blank!</p>';
+        }
+        if (strTaskLocation.length < 1) {
+            blnError = true;
+            strError += '<p>Task location cannot be blank!</p>';
+        }
+        if (!strTaskStatus) {
+            blnError = true;
+            strError += '<p>Task status option must be chosen!</p>';
+        }
+        if (taskDueDate < currentDate) {
+            blnError = true;
+            strError += '<p>Please enter a valid date!</p>';
+        }
+
+        //error check and ajax call here
+        if (blnError) {
+            Swal.fire({
+                title: "Oops!",
+                html: strError,
+                icon: "error"
+            });
+        } else{
+            //ajax call here
+            $.ajax({
+                url: 'http://localhost:8000/updateTask',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    id: selectedTaskId,
+                    taskName: strTaskName,
+                    instruction: strTaskInstruction,
+                    location: strTaskLocation,
+                    status: strTaskStatus,
+                    dueDate: strTaskDueDate
+                }),
+                success: function(response){
+                    //task update successful
+                    console.log(response.message);
+                    Swal.fire({
+                        title: "Success!",
+                        text: response.message,
+                        icon: "success"
+                    });
+                    $('#divEditTaskModal').modal('hide');
+                    loadTasks(); //Refresh the task list
+
+                    //refresh the calander
+                    refreshCalendarFromOutside();
+                },
+                error: function(xhr, status, error){
+                    let errorMessage = "Failed to update task.";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    Swal.fire({
+                        title: "Oops!",
+                        text: errorMessage,
+                        icon: "error"
+                    });
+                }
+            })
+
+        }
+
+    })
+
+    //delete task click event
+    $('#btnConfirmDeleteTask').on('click', function(){
+        //console.log(selectedTaskId);
+        //ajax call to delete task
+        $.ajax({
+                url: 'http://localhost:8000/deleteTask',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    id: selectedTaskId
+                }),
+                success: function(response){
+                    //task update successful
+                    console.log(response.message);
+                    Swal.fire({
+                        title: "Success!",
+                        text: response.message,
+                        icon: "success"
+                    });
+                    $('#divDeleteTaskModal').modal('hide');
+                    loadTasks(); //Refresh the task list
+                    refreshCalendarFromOutside();
+                },
+                error: function(xhr, status, error){
+                    let errorMessage = "Failed to delete task.";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    Swal.fire({
+                        title: "Oops!",
+                        text: errorMessage,
+                        icon: "error"
+                    });
+                }
+            })
+    })
+    
+    //Function to validate username format
+    function isValidUsername(username) {
+        //Regular expression pattern for username validation
+        const usernamePattern = /^[a-zA-Z0-9_]{3,}$/; 
+        return usernamePattern.test(username);
+    }
+
+
+    //event listener to show my modal above to add a task
+    $('#btnAddTask').on('click', function() {
+        //Show the add task modal
+        $('#divAddTaskModal').modal('show');
+    });
+
+    //event listener to show the modal for editing tasks(also calling my function to load tasks)
+    $('#btnEditTask').click(function() {
+        $('#divListTasksModal').modal('show');
+        loadTasks();
+    });
+
+    //event listener to show the modal for deleting tasks(has to load tasks)
+    $('#btnDeleteTask').click(function() {
+        $('#divListTasksModal').modal('show');
+        loadTasksDelete();
+    })
+
+    //initializing bootstrap datepicker for the due date input field
+    $('.datepicker').datepicker({
+        format: 'yyyy-mm-dd', // Set the date format as desired
+        autoclose: true, // Automatically close the datepicker when a date is selected
+        todayHighlight: true // Highlight today's date
+    });
+
+    //writing a function to show the navbar when the dashboard is loaded
+    function showDashboardNavbar() {
+        document.getElementById("divDashboardNavbar").classList.remove("d-none");
+    }
+
+    //writing a function to hide the navbar when logging out
+    function hideDashboardNavbar() {
+        document.getElementById("divDashboardNavbar").classList.add("d-none");
+    }
+
+    //event listener to show the modal for the settings
+    $('#btnSettings').on('click', function() {
+        //Show the add task modal
+        $('#divSettingsModal').modal('show');
+       
+        const username = localStorage.getItem('loggedInUsername');
+        //get settings
+        $.ajax({
+            url: 'http://localhost:8000/getSettings', // Your endpoint to fetch settings
+            type: 'GET',
+            data: {
+                username: username
+            },
+            success: function(response) {
+                // Handle success - response will contain user settings
+                console.log('User settings:', response);
+                // Apply the retrieved settings to your UI elements
+                applySettings(response);
+            },
+            error: function(xhr, status, error) {
+                // Handle error
+                console.error('Error fetching settings:', error);
+                // You may want to provide feedback to the user about the error
+            }
+        });
+    });
+
+    //writing a function to load the tasks into the task list above for the edit task modal
+    function loadTasks() {
+        $('#taskList').empty(); // Clear out the current list
+
+        // Fetch tasks from the backend using the username stored in localStorage
+        const username = localStorage.getItem('loggedInUsername');
+
+        $.ajax({
+            url: 'http://localhost:8000/getTasks',
+            type: 'GET',
+            data: { username: username }, 
+            success: function(tasks) {
+                //Create a new list item for each task with a corresponding edit button
+                tasks.forEach(function(task) {
+                    let listItem = `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>${task.task_name}</span>
+                            <button class="btn btn-secondary btn-sm btn-edit-task" data-task='${JSON.stringify(task)}'>Edit</button>
+                        </li>`;
+                    $('#taskList').append(listItem);
+                });
+
+                //Click event for the edit buttons to show the task in the edit form
+                $('.btn-edit-task').on('click', function() {
+                    let task = $(this).data('task');
+                    $('#divListTasksModal').modal('hide');
+                    $('#editTaskId').val(task.task_id);
+                    $('#editTaskName').val(task.task_name);
+                    $('#editTaskInstruction').val(task.instruction);
+                    $('#editTaskLocation').val(task.location);
+                    $('#editTaskStatus').val(task.status);
+                    $('#editTaskDueDate').val(task.due_date); // Use correct property name
+                    $('#divEditTaskModal').modal('show');
+
+                    //saving the task ID
+                    selectedTaskId = task.task_id;
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading tasks:', error);
+                //Handle error
+                Swal.fire({
+                    title: "Error!",
+                    text: "Update failed. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+}
+
+    //reusing the function to load tasks to delete instead
+    function loadTasksDelete() {
+        $('#taskList').empty(); // Clear out the current list
+
+        //Fetch tasks from the backend using the username stored in localStorage
+        const username = localStorage.getItem('loggedInUsername');
+
+        $.ajax({
+            url: 'http://localhost:8000/getTasks',
+            type: 'GET',
+            data: { username: username }, 
+            success: function(tasks) {
+                //Create a new list item for each task with a corresponding edit button
+                tasks.forEach(function(task) {
+                    let listItem = `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>${task.task_name}</span>
+                            <button class="btn btn-secondary btn-sm btn-delete-task" data-task='${JSON.stringify(task)}'>Delete</button>
+                        </li>`;
+                    $('#taskList').append(listItem);
+                });
+
+                
+                //Click event for the edit buttons to show the task in the edit form
+                $('.btn-delete-task').on('click', function() {
+                    let task = $(this).data('task');
+                    $('#divListTasksModal').modal('hide');
+                    $('#editTaskId').val(task.task_id);
+                    $('#editTaskName').val(task.task_name);
+                    $('#editTaskInstruction').val(task.instruction);
+                    $('#editTaskLocation').val(task.location);
+                    $('#editTaskStatus').val(task.status);
+                    $('#editTaskDueDate').val(task.due_date); // Use correct property name
+                    $('#divDeleteTaskModal').modal('show');
+
+                    //saving the task ID
+                    selectedTaskId = task.task_id;
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading tasks:', error);
+                //Handle error
+                Swal.fire({
+                    title: "Error!",
+                    text: "Update failed. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+
+    //writing a function to load a user's upcoming tasks by date
+    function loadUpcomingTasks(){
+        //empty out the current list
+        $('#upcomingTasksList').empty();
+
+        //grabbing upcoming tasks using the user's username
+        const username = localStorage.getItem('loggedInUsername');
+
+        //ajax call to get the tasks
+        $.ajax({
+            url: 'http://localhost:8000/getTasks',
+            type: 'GET',
+            data: { username: username }, 
+            success: function(tasks) {
+                //sort the upcoming tasks by due date
+                tasks.sort(function(a,b) {
+                    return new Date(a.due_date) - new Date(b.due_date);
+                })
+
+                //slice the array into 10
+                let firstTenTasks = tasks.slice(0,10);
+
+                //getting the current date and tommorow's date
+                const currentDate = new Date();
+                currentDate.setHours(0, 0, 0, 0);
+
+                //iterate through the limited array of 10, allow the user to edit or delete these tasks
+                firstTenTasks.forEach(function(task){
+                    let listItem;
+
+                    // Get task due date with time set to 00:00:00
+                    const taskDueDate = new Date(task.due_date);
+                    taskDueDate.setDate(taskDueDate.getDate() + 1); //adding 1 cause idk why it doesn't line up
+                    taskDueDate.setHours(0, 0, 0, 0);                    
+                    
+                    //console.log(taskDueDate); 
+                    //debugging above ^
+                    
+                    //checking if the task is overdue
+                    if(taskDueDate < currentDate){
+                        //task is overdue, updating it to show that
+                        listItem = `
+                        <li class="list-group-item d-flex justify-content-between align-items-center" data-task-id="${task.id}">
+                            <span>${task.task_name}</span>
+                            <span class="text-danger">Overdue: ${task.due_date}</span>
+                        </li>`;
+
+                        //scheduling deletion 5 days from now
+                        const deletionDate = new Date();
+                        deletionDate.setDate(deletionDate.getDate() + 5);
+
+                        //deleting the task after the 5 day window is up
+                        setTimeout(() => {
+                            deleteTask(task.task_id);
+                        }, deletionDate - currentDate);
+                    } 
+                    else {
+                        //the task is not overdue
+                        listItem = `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>${task.task_name}</span>
+                            <span>Due: ${task.due_date}</span>
+                        </li>`;
+                    }
+                    $('#upcomingTasksList').append(listItem);
+                })
+            },
+            error: function(error){
+                console.error('Error fetching tasks:', error);
+            }
+        })
+
+    }
+    
+    let calendar; //defining the calander globally
+
+    //Initializing calendar
+    $(window).on('load', function() {
+        //checking if the calendar element exists
+        if ($('#calendar').length) {
+            const calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: function(fetchInfo, successCallback, failureCallback) {
+                    //call refreshCalendar 
+                    refreshCalendar(successCallback);
+                },
+                eventClick: function(info) {
+                    //Displaying task instructions in a modal or alert
+                    alert('Task Instructions: ' + info.event.extendedProps.description);
+                }
+            });
+            calendar.render();
+        }
+    });
+
+    //writing a function to refresh the calendar events
+    function refreshCalendar(successCallback) {
+        $.ajax({
+            url: 'http://localhost:8000/getTasks',
+            type: 'GET',
+            dataType: 'json',
+            data: { username: localStorage.getItem('loggedInUsername') },
+            success: function(tasks) {
+                let events = tasks.map(task => {
+                    return {
+                        title: task.task_name,
+                        start: task.due_date,
+                        description: task.instruction
+                    };
+                });
+                successCallback(events);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching tasks:', error);
+            }
+        });
+    }
+
+    //Function to refresh the calendar upon taking an action like adding/deleting
+    function refreshCalendarFromOutside() {
+        if (calendar) {
+            calendar.refetchEvents(); //this will trigger the events function to refetch events
+            loadUpcomingTasks(); //function call to update upcoming upon refresh
+        } else {
+            console.error('Calendar is not initialized.');
+        }
+    }
+    
+    //function to call delete task from the backend for whenever i need
+    function deleteTask(){
+        //ajax to delete a task
+        $.ajax({
+            url: 'http://localhost:8000/deleteTask',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ id: taskId }), // Pass taskId in request body
+            success: function(response) {
+                console.log('Task deleted successfully:', response);
+            },
+            error: function(error){
+                console.error('Error deleting task:', error);
+            }
+        });
+    }
+
+    //Function to apply settings
+    function applySettings(settings) {
+        //Apply font size and type
+        $('body').css('font-size', settings.font_size + 'px');
+        $('body').css('font-family', settings.font_type);
+
+        //Apply Bootstrap theme
+        const themePath = `bootstrap themes/${settings.bootstrap_theme}`;
+        $('#defaultBootstrapTheme').attr('href', themePath);
+
+        //Set the form values to match the settings
+        $('#txtFontSize').val(settings.font_size);
+        $('#txtFontType').val(settings.font_type);
+        $('#txtBootstrapTheme').val(settings.bootstrap_theme);
+    }
+
+    //Event listener to apply settings
+    $('#btnApplySettings').on('click', function () {
+        let settings = {
+            font_size: $('#txtFontSize').val(),
+            font_type: $('#txtFontType').val(),
+            bootstrap_theme: $('#txtBootstrapTheme').val()
+        };
+
+        //Update userModifiedColorScheme based on whether the checkbox is checked
+        userModifiedColorScheme = $('#chkOverrideColorScheme').is(':checked');
+
+        //Get the username from localStorage
+        const username = localStorage.getItem('loggedInUsername');
+
+        //Call a function to delete old settings and save new ones
+        deleteAndSaveSettings(settings, username);
+    });
+
+    
+    //Function to delete old settings and save new ones
+    function deleteAndSaveSettings(settings, username) {
+        //delete the old settings
+        $.ajax({
+            url: 'http://localhost:8000/deleteSettings',
+            type: 'DELETE',
+            data: JSON.stringify({ username: username }),
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Settings deleted successfully:", response);
+
+                //Now, save the new settings
+                $.ajax({
+                    url: 'http://localhost:8000/saveSettings',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ settings: settings, username: username }),
+                    success: function (response) {
+                        console.log("Settings saved successfully:", response);
+
+                        //Apply the updated settings to the page
+                        applySettings(settings);
+
+                        //Provide feedback to the user
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Settings saved successfully.",
+                            icon: "success"
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error saving settings:", error);
+                        //Handle error
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Failed to save settings. Please try again later.",
+                            icon: "error"
+                        });
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error deleting settings:", error);
+                //Handle error
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to delete settings. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+
+    //Function to load user settings
+    function loadUserSettings(username) {
+        $.ajax({
+            url: 'http://localhost:8000/getSettings',
+            type: 'GET',
+            data: { username: username },
+            success: function (response) {
+                console.log("Settings loaded successfully:", response);
+                applySettings(response);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading settings:", error);
+                //Handle error
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to load settings. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+
+
+ </script>
+</body>
+</html>
+
+
